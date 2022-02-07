@@ -58,6 +58,7 @@ module.exports = function(RED) {
 		this.logname = n.logname
 		this.stamp = n.stamp
 		this.logstyle = n.logstyle
+		this.logsens = n.logsens
 
 		this.logrotate = n.logrotate
 		this.logcompress = n.logcompress
@@ -165,7 +166,8 @@ module.exports = function(RED) {
 		if (logfile) {
 			fullpath = node.logconfig.logdir + "/" + logfile
 			try {
-				fs.appendFileSync(fullpath, logline)
+//				fs.appendFileSync(fullpath, logline)
+				WriteDebut(node, fullpath, logline)
 				if (node.logconfig.stamp != "none") {
 					node.status({shape: "ring", fill: "green", text: logtime})
 				}
@@ -178,7 +180,30 @@ module.exports = function(RED) {
 			node.warn("Nothing got logged because you didn't provide a logfile in configuration and has not been overridden from msg.logfile")
 		}
 	}
-
+//	function WriteDebut(fichier, donnees) {
+//		if (fs.existsSync(fichier)) {
+//			var fd = fs.openSync(fichier, "a+");
+//			var buf = new Buffer(donnees)
+//			fs.writeSync(fd, buf, 0, buf.length, 0);
+//			fs.close(fd)
+//		}
+//		else {
+//			fs.appendFileSync(fichier, donnees)
+//		}
+//	}
+	function WriteDebut(node, fichier, donnees) {
+		if (fs.existsSync(fichier) && node.logconfig.logsens=="debut") {
+			var data = fs.readFileSync(fichier); //read existing contents into data
+			var fd = fs.openSync(fichier, 'w+');
+			var buffer = Buffer.from(donnees);
+			fs.writeSync(fd, buffer, 0, buffer.length, 0); //write new data
+			fs.writeSync(fd, data, 0, data.length, buffer.length); //append old data
+			fs.close(fd);
+		}
+		else {
+			fs.appendFileSync(fichier, donnees)
+		}
+	}	
 
 	/* Input: node object, filename with the full path to the logfile and no. of bytes that is
 	going to be added to the logfile. This is to prevent it of tipping over the size.

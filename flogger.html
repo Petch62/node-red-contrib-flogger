@@ -7,6 +7,7 @@
 			logdir: {value:"",required:true},
 			stamp: {value:"utc"},
 			logstyle: {value:"plain"},
+			logsens: {value:"fin"},
 			logrotate: {value:""},
 			logcompress: {value:""},
 			logrotatecount: {value: "5"},
@@ -55,6 +56,13 @@
 		<select type="text" id="node-config-input-logstyle" placeholder="Log Style">
 			<option value="plain">Plain Text</option>
 			<option value="json">Pure JSON</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-config-input-logsens"><i class="fa fa-clock-o"></i> Log Sens</label>
+		<select type="text" id="node-config-input-logsens" placeholder="Log Sens">
+			<option value="debut">Debut</option>
+			<option value="fin">Fin</option>
 		</select>
 	</div>
 	<div class="form-row">
